@@ -1,127 +1,125 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import axios from 'axios'
-import { makeStyles, fade } from '@material-ui/core/styles';
-import { ActionSearch } from 'material-ui/svg-icons';
-const useStyles = makeStyles((theme) => ({
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-    },
-    selectEmpty: {
-        marginTop: theme.spacing(2),
-    },
-    search: {
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: fade(theme.palette.common.white, 0.15),
-        '&:hover': {
-            backgroundColor: fade(theme.palette.common.white, 0.25),
-        },
-        marginRight: theme.spacing(2),
-        marginLeft: 0,
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(3),
-            width: 'auto',
-        },
-    },
-    searchIcon: {
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    root: {
-        '& > *': {
-            margin: theme.spacing(1),
-            width: '25ch',
-        },
-    },
-}));
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl'
+export default class Events extends React.Component {
 
-export default function Select() {
-    const classes = useStyles();
-    const [s,sets]= React.useState()
-    var data
-    function searchtext() {
-        var e = {
-            email:s
-        }
-        axios.post('http://localhost:9996/post/helpline',e )
-             .then(function (response) {
-               data = response
-             })
-             .catch(function (error) {
-                 console.log(error);
-         }); 
+  constructor(props) {
+    super(props)
+    this.state = {
+      events: [],
+      email: '',
+      status:''
     }
-    const Table = ({ list }) => (
-        <table className="table table-striped" style={{Align: 'center'}}>
-          <thead>
-            <tr>
-              <th>Student Name</th>&nbsp;&nbsp;
-              <th>Email</th>&nbsp;&nbsp;
-              <th>Roll Number</th>&nbsp;&nbsp;
-             <th>Pass Out Year</th>&nbsp;&nbsp;
-            <th>College Name</th>&nbsp;&nbsp;
-            <th>HelpLine Subject</th>&nbsp;&nbsp;
-            <th>HelpLine Description</th>&nbsp;&nbsp;
-            <th>Status</th>
-            <th>Response</th>
-            <th>file</th>
-            </tr>
-            <br/>
-          </thead>
-          <tbody>
-            {list.map(item => (
-              <tr key={item.name}>
-                <td>
-                  <span>{item.email}</span>
-                </td>&nbsp;&nbsp;
-                <td>
-                  <span>{item.rollnumber}</span>
-                </td>&nbsp;&nbsp;
+    this.rows = [{
+      id: 'djnjs',
+      name: 'nvnv',
+      rollno: 'ddbs',
+      status: 'dncsjd'
+    }
+    ]
+    this.search = this.search.bind(this)
+    this.setStatus = this.setStatus.bind(this)
+  }
+setStatus(row) {
+  row.status = this.state.status
+  row.respone = this.state.res
+  console.log(row)
+  axios.post('http://localhost:9996/helpline/response',row)
+      .then(function (response) {
+        this.setState({
+          events: response.data
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+}
+  search() {
+    axios.post('http://localhost:9996/get/helpline', this.state.email)
+      .then(function (response) {
+        this.setState({
+          events: response.data
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+  render() {
 
-                <td>
-                  <span>{item.passoutyear}</span>
-                </td>&nbsp;&nbsp;
-                <td>
-                  <span>{item.collegename}</span>
-                </td>&nbsp;&nbsp;
-                <td>
-                  <span>{item.helplinesubject}</span>
-                </td>&nbsp;&nbsp;
-                <td>
-                  <span>{item.helplinedescription}</span>
-                </td>&nbsp;&nbsp;
-                <td>
-                  <span>{item.status}</span>
-                </td>&nbsp;&nbsp;
-                <td>
-                  <span>{item.response}</span>
-                </td>&nbsp;&nbsp;
-                <td>
-                  <span>{item.file}</span>
-                </td>&nbsp;&nbsp;
-        
-        
-              </tr>
+    return <div>
+      <form noValidate autoComplete="off">
+        <TextField id="standard-basic" label="Search" placeholder="search" style={{ textAlign: 'center' }} onChange={(e) => this.setState({ email: e.target.value })} />
+      </form>
+      <Button onClick={this.search} style={{ textAlign: 'center' }}>Search</Button>
+       <TableContainer component={Paper}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Id</TableCell>
+              <TableCell align="right">Name</TableCell>
+              <TableCell align="right">Email Id</TableCell>
+              <TableCell align="right">College Name</TableCell>
+              <TableCell align="right">Roll NUmber</TableCell>
+              <TableCell align="right">Pass Out Year</TableCell>
+              <TableCell align="right">HelpLine Subject</TableCell>
+              <TableCell align="right">HelpLine Description</TableCell>
+              <TableCell align="right">Status</TableCell>
+              <TableCell align="right">reponse</TableCell>
+              <TableCell align="right">Filepath</TableCell>
+              <TableCell align="right">Save</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.events.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell component="th" scope="row">
+                  {row.id}
+                </TableCell>
+                <TableCell align="right">{row.name}</TableCell>
+                <TableCell align="right">{row.emailid}</TableCell>
+                <TableCell align="right">{row.collegename}</TableCell>
+                <TableCell align="right">{row.rollno}</TableCell>
+                <TableCell align="right">{row.passoutyear}</TableCell>
+                <TableCell align="right">{row.helplinesubject}</TableCell>
+                <TableCell align="right">{row.helplinedescription}</TableCell>
+                <TableCell align="right"> <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">status</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={this.state.status}
+                    onChange={e => this.setState({status:e.target.value})}
+                    fullWidth
+                  >
+                    <MenuItem value="open" name="open">open</MenuItem>
+                    <MenuItem value="close" name="close">close</MenuItem>
+                    
+                  </Select>
+                </FormControl></TableCell>
+                <TableCell align="right"> <TextField onChange={(e) =>this.setState({res:e.target.value})}>{row.response}</TextField></TableCell>
+                <TableCell align="right">{row.filepath}</TableCell>
+                <TableCell align="right"><Button onClick={() => this.setStatus(row)}>Save</Button></TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      );
-    return (
-        <div>
-            <form  className={classes.root} noValidate autoComplete="off">
-                <TextField id="standard-basic" label="email" placeholder="email" style={{textAlign: 'center'}} onChange={(e)=> sets({s:e.target.value})}/>
-            </form>
-            <Button onClick={searchtext} style={{textAlign: 'center'}}>Search</Button>
-            {data ? <Table list={data} /> : null}
-        </div>
-    );
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+
+  }
 }
